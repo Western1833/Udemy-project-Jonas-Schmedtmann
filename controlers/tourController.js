@@ -15,7 +15,7 @@ exports.getAllTours = (req, res) => {
 exports.getSingleTour = (req, res) => {
     const id = Number(req.params.id);
 
-    const tour = tours.find(el = el.id === id);
+    const tour = tours.find(el => el.id === id);
 
     if(!tour){
         res.status(404).json({
@@ -23,6 +23,13 @@ exports.getSingleTour = (req, res) => {
             message: 'Invalid ID'
         });
     };
+
+    res.status(200).json({
+        status: 'sucess',
+        data: {
+            tour
+        }
+    });
 };
 
 exports.createTour = (req, res) => {
