@@ -1,11 +1,15 @@
 const fs = require('fs');
 const express = require('express');
+const morgan = require('morgan');
+
+
 const port = 5050;
 
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`));
 
 const app = express();
 
+app.use(morgan('dev'));
 app.use(express.json());
 
 const getAllTours = (req, res) => {
@@ -81,6 +85,41 @@ const deleteTour = (req, res) => {
     });
 };
 
+const getAllUsers = (req, res) => {
+    res.status(500).json({
+        stratus: 'error',
+        message: 'This route is not yet defined!'
+    });
+}
+
+const createuser = (req, res) => {
+    res.status(500).json({
+        stratus: 'error',
+        message: 'This route is not yet defined!'
+    });
+}
+
+const getSingleUser = (req, res) => {
+    res.status(500).json({
+        stratus: 'error',
+        message: 'This route is not yet defined!'
+    });
+}
+
+const updateUser = (req, res) => {
+    res.status(500).json({
+        stratus: 'error',
+        message: 'This route is not yet defined!'
+    });
+}
+
+const deleteUser = (req, res) => {
+    res.status(500).json({
+        stratus: 'error',
+        message: 'This route is not yet defined!'
+    });
+}
+
 app.route('/api/v1/tours')
 .get(getAllTours)
 .post(createTour);
@@ -89,5 +128,14 @@ app.route('/api/v1/tours/:id')
 .get(getSingleTour)
 .patch(updateTour)
 .delete(deleteTour);
+
+app.route('/api/v1/users')
+.get(getAllUsers)
+.post(createuser);
+
+app.route('/api/v1/users/:id')
+.get(getSingleUser)
+.patch(updateUser)
+.delete(deleteUser);
 
 app.listen(port, () => console.log(`Server is listening on port ${port}...`));
