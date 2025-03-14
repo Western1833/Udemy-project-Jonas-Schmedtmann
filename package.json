@@ -4,7 +4,7 @@
   "description": "Node, express and mongodb project",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "nodemon server.js"
   },
   "author": "Iliya Kashev",
   "license": "ISC",
