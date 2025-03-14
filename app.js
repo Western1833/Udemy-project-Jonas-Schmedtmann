@@ -120,22 +120,28 @@ const deleteUser = (req, res) => {
     });
 }
 
-app.route('/api/v1/tours')
+const tourRouter = express.Router();
+const userRouter = express.Router();
+
+tourRouter.route('/')
 .get(getAllTours)
 .post(createTour);
 
-app.route('/api/v1/tours/:id')
+tourRouter.route('/:id')
 .get(getSingleTour)
 .patch(updateTour)
 .delete(deleteTour);
 
-app.route('/api/v1/users')
+userRouter.route('/')
 .get(getAllUsers)
 .post(createuser);
 
-app.route('/api/v1/users/:id')
+app.route('/:id')
 .get(getSingleUser)
 .patch(updateUser)
 .delete(deleteUser);
+
+app.use('/api/v1/tours', tourRouter);
+app.use('/api/v1/users', userRouter);
 
 app.listen(port, () => console.log(`Server is listening on port ${port}...`));
