@@ -7,11 +7,22 @@ exports.getAllTours = async (req, res) => {
 
         excludedOptions.forEach(el => delete queryObj[el]);
 
-        
+        //filtering
         let queryStr = JSON.stringify(queryObj);
         queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
         
-        const query = Tour.find(JSON.parse(queryStr));
+        let query = Tour.find(JSON.parse(queryStr));
+
+        //sorting
+        if(req.query.sort){
+            const sortBy = req.query.sort.split(',').join(' ');
+            query = query.sort(req.query.sort);
+            //sort descending order with ?sort=-
+            //sort by two criterias, we separete with comma
+        }else{
+            query = query.sort('-createdAt');
+        }
+
         const allTours = await query;
 
         res.status(200).json({
