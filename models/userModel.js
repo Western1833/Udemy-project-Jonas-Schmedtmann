@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
-const { validate } = require('./tourModel.js');
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -25,7 +24,13 @@ const userSchema = new mongoose.Schema({
     passwordConfirm: {
         type: String,
         required: [true, 'Please confirm your password.'],
-        minLength: 4
+        minLength: 4,
+        validate: {
+            validator: function(el){
+                return el === this.password;
+            },
+            message: 'Passwords are not the same!'
+        }
     }
 });
 
