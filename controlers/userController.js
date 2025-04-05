@@ -12,11 +12,22 @@ const filterObj = (obj, ...allowedFields) => {
     return newObj;
 }
 
-exports.getAllUsers = (req, res) => {
-    res.status(500).json({
-        stratus: 'error',
-        message: 'This route is not yet defined!'
-    });
+exports.getAllUsers = async(req, res) => {
+    try{
+        const users = await User.find()
+
+        res.status(200).json({
+            status: 'success',
+            data: {
+                users
+            }
+        })
+    }catch(err){
+        res.status(500).json({
+            stratus: 'error',
+            message: err
+        });
+    }
 }
 
 exports.updateMe = catchAsync (async (req, res, next) => {
@@ -39,6 +50,15 @@ exports.updateMe = catchAsync (async (req, res, next) => {
             user: updatedUser
         }
     });
+});
+
+exports.deleteMe = catchAsync(async (req, res, next) => {
+    await User.findByIdAndUpdate(req.user.id, {active: false});
+
+    res.status(200).json({
+        status: 'success',
+        data: null
+    })
 });
 
 exports.createuser = (req, res) => {
