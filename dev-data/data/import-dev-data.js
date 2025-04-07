@@ -2,8 +2,9 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const fs = require('fs');
 const Tour = require('./../../models/tourModel.js');
+const path = require('path');
 
-dotenv.config({path: '../../config.env'});
+dotenv.config({ path: path.resolve(__dirname, '..', '..', 'config.env') });
 
 const DB = process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSWORD);
 
@@ -14,7 +15,7 @@ mongoose.connect(DB, {
     useUnifiedTopology: true
 }).then(() => console.log('DB connection successful!'));
 
-const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8'));
+const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`, 'utf-8'));
 
 const importData = async() => {
     try{
