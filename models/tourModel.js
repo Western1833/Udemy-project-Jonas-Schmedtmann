@@ -100,6 +100,13 @@ tourSchema.pre('save', function(next) {
     next();
 });
 
+//Virtual populate
+tourSchema.virtual('reviews', {
+    ref: 'Review',
+    foreignField: 'tour',
+    localField: '_id'
+});
+
 //Tour modeling, embedded way. Won't be used
 
 // tourSchema.pre('save', async function(next){
