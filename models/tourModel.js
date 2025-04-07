@@ -1,12 +1,11 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 const validator = require('validator');
-const User = require('./userModel.js');
 
 const tourSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: [true, 'A trour must have a name!'],
+        required: [true, 'A tour must have a name!'],
         unique: true,
         trim: true
     },
@@ -79,7 +78,14 @@ const tourSchema = new mongoose.Schema({
             day: Number
         }
     ],
-    guides: Array
+    //guides: Array - for embedding
+    //With child reference
+    guides: [
+        {
+            type: mongoose.Schema.ObjectId,
+            ref: 'User'
+        }
+    ]
 }, {
     toJSON: {virtuals: true},
     toObject: {virtuals: true}
@@ -94,15 +100,30 @@ tourSchema.pre('save', function(next) {
     next();
 });
 
-tourSchema.pre('save', async function(next){
-    const guidesPromises = this.guides.map(async id => await User.findById(id));
-    this.guides = await Promise.all(guidesPromises);
-    next();
-});
+//Tour modeling, embedded way. Won't be used
+
+// tourSchema.pre('save', async function(next){
+//     const guidesPromises = this.guides.map(async id => await User.findById(id));
+//     this.guides = await Promise.all(guidesPromises);
+//     next();
+// });
 
 tourSchema.pre(/^find/, function(next) {
     this.find({secretTour: {$ne: true}});
     this.start = Date.now();
+    next();
+});
+
+tourSchema.pre('aggregate', function(next) {
+    this.pipeline().unshift({$match: {secretTour: {$ne: true}}});
+    next();
+});
+
+tourSchema.pre(/^find/, function(next){
+    this.populate({
+        path: 'guides',
+        select: '-__v'//put unwanted data here with dash infront
+    });
     next();
 });
 
@@ -112,10 +133,6 @@ tourSchema.post(/^find/, function(docs, next) {
     next();
 });
 
-tourSchema.pre('aggregate', function(next) {
-    this.pipeline().unshift({$match: {secretTour: {$ne: true}}});
-    next();
-});
 
 const Tour = mongoose.model('Tour', tourSchema);
 
