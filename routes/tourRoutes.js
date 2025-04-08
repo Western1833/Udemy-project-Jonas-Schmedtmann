@@ -2,9 +2,12 @@ const express = require('express');
 
 const tourController = require('../controlers/tourController.js');
 const authController = require('../controlers/authController.js');
-const reviewController = require('../controlers/reviewController.js');
+const reviewRouter = require('./reviewRoutes.js');
 
 const router = express.Router();
+
+//Nested route implementation for reviews
+router.use('/:tourId/reviews', reviewRouter)
 
 // router.param('id', tourController.checkId);
 router.route('/top-5').get(tourController.aliasTopTours, tourController.getAllTours);
@@ -19,7 +22,5 @@ router.route('/:id')
 .get(tourController.getSingleTour)
 .patch(tourController.updateTour)
 .delete(authController.protect, authController.restrictTo('admin', 'lead-guide'), tourController.deleteTour);
-
-router.route('/:tourId/reviews').post(authController.protect, authController.restrictTo('user'), reviewController.createNewReview)
 
 module.exports = router;
