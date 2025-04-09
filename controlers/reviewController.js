@@ -1,46 +1,20 @@
 const Review = require('../models/reviewModel.js');
 const AppError = require('../utils/appError.js');
 const catchAsync = require('../utils/catchAsync.js');
+const factory = require('./handlerFactory.js');
 
-exports.getAllReviews = catchAsync(async (req, res, next) => {
-    const allReviews = await Review.find();
-
-    res.status(200).json({
-        status: 'success',
-        results: allReviews.length,
-        data: {
-            allReviews
-        }
-    });
-});
-
-exports.createNewReview = catchAsync(async (req, res, next) => {
+exports.setTourUserIds = (req, res, next) => {
     if(!req.body.tour) req.body.tour = req.params.tourId;
     if(!req.body.user) req.body.user = req.user.id;
-    
-    const review = await Review.create(req.body);
+    next();
+}
 
-    res.status(201).json({
-        status: 'success',
-        data: {
-            review
-        }
-    });
-});
+exports.getSingleReview = factory.getOne(Review, null, 'review');
 
-exports.getSingleReview = catchAsync(async (req, res, next) => {
-    const id = req.params.id;
+exports.getAllReviews = factory.getAll(Review);
 
-    const review = await Review.findById(id);
+exports.createNewReview = factory.createOne(Review, 'review');
 
-    if(!review){
-        return next(new AppError('Invalid ID!', 404));
-    }
+exports.updateReview = factory.updateOne(Review, 'review');
 
-    res.status(200).json({
-        status: 'success',
-        data: {
-            review
-        }
-    });
-});
+exports.deleteReview = factory.deleteOne(Review, 'review');
