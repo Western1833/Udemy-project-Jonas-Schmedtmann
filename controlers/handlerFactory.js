@@ -57,7 +57,7 @@ exports.getOne = (Model, populateOptions, whatIsObtained) => catchAsync(async (r
 
     res.status(200).json({
         status: 'success',
-        [whatIsObtained]: { tour: doc }
+        [whatIsObtained]: doc
     });
 });
 
